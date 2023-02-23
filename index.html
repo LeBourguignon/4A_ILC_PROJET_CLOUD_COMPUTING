@@ -1,0 +1,30 @@
+<!-- Créer une calculatrice avec les opérations de base (addition, soustraction, multiplication, division) -->
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="css/style.css">
+		<title>Calculatrice en ligne</title>
+	</head>
+	<body>
+        <div id="container">
+            <h1>Calculatrice en ligne</h1>
+            <form action="index.php" method="post">
+                <input type="text" name="number1" placeholder="Nombre 1">
+                <input type="text" name="number2" placeholder="Nombre 2">
+                <select name="operator">
+                    <option>None</option>
+                    <option>Add</option>
+                    <option>Subtract</option>
+                    <option>Multiply</option>
+                </select>
+                <br>
+                <button type="submit" name="submit" value="submit">Calculer</button>
+            </form>
+            <p>Le résultat est :</p>
+            <!-- Effectuer une requête à une API via une requête HTTP pour récupérer le résultat -->
+            
+        </div>
+	</body>
+</html>
