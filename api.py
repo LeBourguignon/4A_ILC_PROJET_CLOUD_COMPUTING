@@ -1,6 +1,8 @@
 from flask import Flask, request
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+cors = CORS(app)
 
 class Data:
     def __init__(self, id, resultat):
