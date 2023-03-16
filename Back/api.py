@@ -23,11 +23,11 @@ class Tweet:
 
     def __json__(self):
         return {
-            "date": self.date,
             "author": self.author,
+            "date": self.date,
+            "hashtags": self.hashtags,
             "message": self.message,
-            "retweet": self.retweet,
-            "hashtags": self.hashtags
+            "retweet": self.retweet            
         }
 
 tweets = []
@@ -73,7 +73,7 @@ def newTweet():
         return { "success": True }
     else:
         return { "success": False }
-    # curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom", "message": "Ceci est un test !"}' http://localhost:5000/newTweet
+    # curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom", "message": "Ceci est un test ! #test"}' http://localhost:5000/newTweet
 
 @app.route("/retweet", methods=['POST'])
 def retweet():
@@ -83,8 +83,8 @@ def retweet():
     if login(data.get('user'), data.get('password')):
         for tweet in tweets:
             print(tweet.__json__())
-            if tweet.__json__() == data.get('tweet'):
+            if tweet.__json__() == data.get('tweet') and not(data.get('user') in tweet.retweet):
                 tweet.retweet.append(data.get('user'))
                 return { "success": True }
     return { "success": False }
-    # curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom", "tweet": {"author": "Tom", "date": "Thu, 16 Mar 2023 16:57:24 GMT", "hashtags": ["#test", "#first"], "message": "Ceci est un test ! #test #first", "retweet": []}}' http://localhost:5000/retweet
+    # curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom", "tweet": {"author": "Tom", "date": "", "hashtags": ["#test"], "message": "Ceci est un test ! #test", "retweet": []}}' http://localhost:5000/retweet
