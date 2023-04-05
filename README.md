@@ -1,3 +1,5 @@
-# 4A_ILC_PROJET_CLOUD_COMPUTING
+#  4A_ILC_PROJET_CLOUD_COMPUTING
 
-https://github.com/JeromeMSD/module_cloud-computing/blob/main/SUJET_PROJET.md
+*Auteurs :* [Baptiste Andres](https://github.com/LeBourguignon) et [Tom Roth](https://github.com/tom-rh)
+
+*Spécialité :* ILC
