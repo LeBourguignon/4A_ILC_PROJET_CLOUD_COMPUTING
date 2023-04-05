@@ -46,6 +46,24 @@ def showTweets():
 	return { "tweets": [json.loads(r.get(f"tweet:{tweet_id}")) for tweet_id in r.lrange('tweets', 0, -1)] }
 	# curl -X GET http://localhost:5000/showTweets
 
+@app.route("/showUserTweets", methods=['POST'])
+def showUserTweets():
+	data = request.get_json()
+	return { "tweets": [json.loads(r.get(f"tweet:{tweet_id}")) for tweet_id in r.lrange(f'user:{data.get("user")}', 0, -1)] }
+	# curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom"}' http://localhost:5000/showUserTweets
+
+@app.route("/showHashtags", methods=['GET'])
+def showHashtags():
+	return { "hashtags": r.lrange('hashtags', 0, -1) }
+	# curl -X GET http://localhost:5000/showHashtags
+
+@app.route("/showHashtagTweets", methods=['POST'])
+def showHashtagTweets():
+	data = request.get_json()
+	return { "tweets": [json.loads(r.get(f"tweet:{tweet_id}")) for tweet_id in r.lrange(f'hashtag:{data.get("hashtag")}', 0, -1)] }
+	# curl -X POST -H "Content-Type: application/json" -d '{"hashtag": "#test"}' http://localhost:5000/showUserTweets
+
+
 @app.route("/newTweet", methods=['POST'])
 def newTweet():
 	data = request.get_json()
@@ -66,7 +84,7 @@ def newTweet():
 		r.lpush(f'user:{data.get("user")}', tweet_id)
 		for hashtag in tweet_data["hashtags"]:
 			r.lpush(f'hashtag:{hashtag}', tweet_id)
-			if not r.exists('hashtags', hashtag):
+			if r.lpos('hashtags', hashtag) is None:
 				r.lpush('hashtags', hashtag)
 
 		return { "success": True }
@@ -79,19 +97,16 @@ def retweet():
 	data = request.get_json()
 	if login(data.get('user'), data.get('password')):
 		tweet_data = json.loads(r.get(f"tweet:{data.get('tweet_id')}"))
-		print(tweet_data)
 		if not data.get('user') in tweet_data["retweets"]:
 			tweet_data["retweets"].append(data.get('user'))
 			r.set(f'tweet:{data.get("tweet_id")}', json.dumps(tweet_data))
 
-			if not r.exists(f'user:{data.get("user")}', data.get('tweet_id')):
+			if r.lpos(f'user:{data.get("user")}', data.get('tweet_id')) is None:
 				r.lpush(f'user:{data.get("user")}', data.get('tweet_id'))
 
 			return { "success": True }
 	return { "success": False }
 	# curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom", "tweet_id": 0}' http://localhost:5000/retweet
-
-
 
 if __name__ == '__main__':
 	print(" * Starting api.py")
