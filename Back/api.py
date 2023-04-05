@@ -1,90 +1,113 @@
 from flask import Flask, request
-# from flask_cors import CORS, cross_origin
 
+import redis
 import json
 import datetime
 import re
+import sys
 
 app = Flask(__name__)
-# cors = CORS(app)
-
-users = {}
+r = redis.Redis(host='localhost', port=6379, db=0, encoding='utf-8', decode_responses=True)
 
 def login(user, password):
-    return user in users and users[user] == password
+	return r.hexists('users', user) and r.hget('users', user) == password
 
-class Tweet:
-    def __init__(self, author, message):
-        self.date = datetime.datetime.now().isoformat()
-        self.author = author    
-        self.message = message
-        self.retweet = []
-        self.hashtags = re.findall(r'#\w+', message)
 
-    def __json__(self):
-        return {
-            "author": self.author,
-            "date": self.date,
-            "hashtags": self.hashtags,
-            "message": self.message,
-            "retweet": self.retweet            
-        }
-
-tweets = []
 
 @app.route("/", methods=['GET'])
 def helloWorld():
-    return "Hello World! \n"
-    # curl -X GET http://localhost:5000/
+	return "Hello World! \n"
+	# curl -X GET http://localhost:5000/
 
 @app.route("/seekUser", methods=['POST'])
 def seekUser():
-    data = request.get_json()
-    return { "find": data.get('user') in users }
-    # curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom"}' http://localhost:5000/seekUser
+	data = request.get_json()
+	return { "find": r.hexists('users', data.get('user')) }
+	# curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom"}' http://localhost:5000/seekUser
 
 @app.route("/register", methods=['POST'])
 def registerUser():
-    data = request.get_json()
-    if not(data.get('user') in users):
-        users[data.get('user')] = data.get('password')
-        return { "success": True }
-    else:
-        return { "success": False }
-    # curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom"}' http://localhost:5000/register
-
+	data = request.get_json()
+	if not(r.hexists('users', data.get('user'))):
+		r.hset('users', data.get('user'), data.get('password'))
+		return { "success": True }
+	else:
+		return { "success": False }
+	# curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom"}' http://localhost:5000/register
 
 @app.route("/login", methods=['POST'])
 def loginUser():
-    data = request.get_json()
-    return { "success": login(data.get('user'), data.get('password')) }
-    # curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom"}' http://localhost:5000/login
+	data = request.get_json()
+	return { "success": login(data.get('user'), data.get('password')) }
+	# curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom"}' http://localhost:5000/login
 
 @app.route("/showTweets", methods=['GET'])
 def showTweets():
-    return { "tweets": [tweet.__json__() for tweet in tweets] }
-    # curl -X GET http://localhost:5000/showTweets
+	return { "tweets": [json.loads(r.get(f"tweet:{tweet_id}")) for tweet_id in r.lrange('tweets', 0, -1)] }
+	# curl -X GET http://localhost:5000/showTweets
 
 @app.route("/newTweet", methods=['POST'])
 def newTweet():
-    data = request.get_json()
-    if login(data.get('user'), data.get('password')):
-        tweets.append(Tweet(data.get('user'), data.get('message')))
-        return { "success": True }
-    else:
-        return { "success": False }
-    # curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom", "message": "Ceci est un test ! #test"}' http://localhost:5000/newTweet
+	data = request.get_json()
+	if login(data.get('user'), data.get('password')):
+		tweet_id = r.llen('tweets')
+		tweet_data = {
+			"id": tweet_id,
+			"author": data.get('user'),
+			"date": datetime.datetime.now().isoformat(),
+			"hashtags": re.findall(r'#\w+', data.get('message')),
+			"message": data.get('message'),
+			"retweets": []
+		}
+
+		r.set(f'tweet:{tweet_id}', json.dumps(tweet_data))
+		r.lpush('tweets', tweet_id)
+
+		r.lpush(f'user:{data.get("user")}', tweet_id)
+		for hashtag in tweet_data["hashtags"]:
+			r.lpush(f'hashtag:{hashtag}', tweet_id)
+			if not r.exists('hashtags', hashtag):
+				r.lpush('hashtags', hashtag)
+
+		return { "success": True }
+	else:
+		return { "success": False }
+	# curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom", "message": "Ceci est un test ! #test"}' http://localhost:5000/newTweet
 
 @app.route("/retweet", methods=['POST'])
 def retweet():
-    data = request.get_json()
-    dataTweet = data.get('tweet')
-    print(dataTweet)
-    if login(data.get('user'), data.get('password')):
-        for tweet in tweets:
-            print(tweet.__json__())
-            if tweet.__json__() == data.get('tweet') and not(data.get('user') in tweet.retweet):
-                tweet.retweet.append(data.get('user'))
-                return { "success": True }
-    return { "success": False }
-    # curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom", "tweet": {"author": "Tom", "date": "", "hashtags": ["#test"], "message": "Ceci est un test ! #test", "retweet": []}}' http://localhost:5000/retweet
+	data = request.get_json()
+	if login(data.get('user'), data.get('password')):
+		tweet_data = json.loads(r.get(f"tweet:{data.get('tweet_id')}"))
+		print(tweet_data)
+		if not data.get('user') in tweet_data["retweets"]:
+			tweet_data["retweets"].append(data.get('user'))
+			r.set(f'tweet:{data.get("tweet_id")}', json.dumps(tweet_data))
+
+			if not r.exists(f'user:{data.get("user")}', data.get('tweet_id')):
+				r.lpush(f'user:{data.get("user")}', data.get('tweet_id'))
+
+			return { "success": True }
+	return { "success": False }
+	# curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom", "tweet_id": 0}' http://localhost:5000/retweet
+
+
+
+if __name__ == '__main__':
+	print(" * Starting api.py")
+
+	if not r.ping():
+		print(" * The api failed to reach the data storage (redis)")
+		exit(1)
+	else:
+		print(" * The api succeeded to reach the data storage (redis)")
+
+	if len(sys.argv) > 1:
+		if sys.argv[1] == "check_syntax":
+			print(" * Build [ OK ]")
+			exit(0)
+		else:
+			print(" * Passed argument not supported ! Supported argument : check_syntax")
+			exit(1)
+
+	app.run(debug=True)
