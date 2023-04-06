@@ -12,7 +12,7 @@ r = redis.Redis(host='localhost', port=6379, db=0, encoding='utf-8', decode_resp
 def login(user, password):
 	return r.hexists('users', user) and r.hget('users', user) == password
 
-
+### Api Management
 
 @app.route("/", methods=['GET'])
 def helloWorld():
@@ -23,6 +23,8 @@ def helloWorld():
 def healthz():
 	return 200
 	# curl -X GET http://localhost:5000/healthz
+
+### User Management
 
 @app.route("/seekUser", methods=['POST'])
 def seekUser():
@@ -46,6 +48,19 @@ def loginUser():
 	return { "success": login(data.get('user'), data.get('password')) }
 	# curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom"}' http://localhost:5000/login
 
+@app.route("/changePassword", methods=['POST'])
+def changePassword():
+	data = request.get_json()
+	if login(data.get('user'), data.get('password')):
+		r.hset('users', data.get('user'), data.get('newPassword'))
+		return { "success": True }
+	else:
+		return { "success": False }
+	# curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom", "newPassword": "itsTom"}' http://localhost:5000/changePassword
+	
+
+### Viewing tweets
+
 @app.route("/showTweets", methods=['GET'])
 def showTweets():
 	return { "tweets": [json.loads(r.get(f"tweet:{tweet_id}")) for tweet_id in r.lrange('tweets', 0, -1)] }
@@ -68,6 +83,7 @@ def showHashtagTweets():
 	return { "tweets": [json.loads(r.get(f"tweet:{tweet_id}")) for tweet_id in r.lrange(f'hashtag:{data.get("hashtag")}', 0, -1)] }
 	# curl -X POST -H "Content-Type: application/json" -d '{"hashtag": "#test"}' http://localhost:5000/showHashtagTweets
 
+### Tweets management
 
 @app.route("/newTweet", methods=['POST'])
 def newTweet():
@@ -112,6 +128,8 @@ def retweet():
 			return { "success": True }
 	return { "success": False }
 	# curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom", "tweet_id": 0}' http://localhost:5000/retweet
+
+### Main
 
 if __name__ == '__main__':
 	print(" * Starting api.py")
