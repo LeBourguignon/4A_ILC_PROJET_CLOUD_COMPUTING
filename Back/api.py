@@ -61,7 +61,7 @@ def showHashtags():
 def showHashtagTweets():
 	data = request.get_json()
 	return { "tweets": [json.loads(r.get(f"tweet:{tweet_id}")) for tweet_id in r.lrange(f'hashtag:{data.get("hashtag")}', 0, -1)] }
-	# curl -X POST -H "Content-Type: application/json" -d '{"hashtag": "#test"}' http://localhost:5000/showUserTweets
+	# curl -X POST -H "Content-Type: application/json" -d '{"hashtag": "#test"}' http://localhost:5000/showHashtagTweets
 
 
 @app.route("/newTweet", methods=['POST'])
