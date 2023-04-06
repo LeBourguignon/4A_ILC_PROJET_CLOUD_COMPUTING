@@ -19,6 +19,11 @@ def helloWorld():
 	return "Hello World! \n"
 	# curl -X GET http://localhost:5000/
 
+@app.route("/healthz", methods=['GET'])
+def healthz():
+	return 200
+	# curl -X GET http://localhost:5000/healthz
+
 @app.route("/seekUser", methods=['POST'])
 def seekUser():
 	data = request.get_json()
