@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# pip install redis
+# pip install Flask
+
 export FLASK_APP=api.py
 export FLASK_DEBUG=true
 flask run

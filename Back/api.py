@@ -21,7 +21,7 @@ def helloWorld():
 
 @app.route("/healthz", methods=['GET'])
 def healthz():
-	return 200
+	return "200"
 	# curl -X GET http://localhost:5000/healthz
 
 ### User Management
