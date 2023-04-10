@@ -1,9 +1,28 @@
 let localUsername = null;
 let localPassword = null;
 
-function messageAlert(message) {
+function messageAlert(message, type = 1) {
 	const alert = document.getElementById('alert-text');
 	alert.innerHTML = message;
+
+	const icon = document.getElementById('alert-icon');
+	switch(type) {
+		case 0:	// vert
+			icon.className = "fa-solid fa-check";
+			icon.style = "color: #00ff40;";
+			break;
+
+		default:
+		case 1:	// info
+			icon.className = "fa-solid fa-circle-info";
+			icon.style = "color: #0e7ab8;";
+			break;
+
+		case 2:	//rouge
+			icon.className = "fa-solid fa-xmark";
+			icon.style = "color: #ff0000;";
+			break;
+	}
 }
 
 async function displayAllTweets() {
@@ -47,46 +66,58 @@ async function displayFilteredTweets() {
 }
 
 async function retweet(tweet_id) {
-	const url = 'http://localhost:5000/retweet';
-	const response = await fetch(url, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({
-			"user": localUsername,
-			"password": localPassword,
-			"tweet_id": tweet_id
-		})
-	});
-	const data = await response.json();
-	if (data.success) {
-		displayFilteredTweets();
-		messageAlert("Tweet retweeté.");
+	if (localUsername && localPassword) {
+		const url = 'http://localhost:5000/retweet';
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				"user": localUsername,
+				"password": localPassword,
+				"tweet_id": tweet_id
+			})
+		});
+		const data = await response.json();
+		if (data.success) {
+			displayFilteredTweets();
+			messageAlert("Tweet retweeté.", 0);
+		}
+		else
+			messageAlert("Tweet déjà retweeté.", 2)
 	}
+	else
+		messageAlert("Veuillez vous connecter.", 1);
 }
 
 async function addTweet() {
-	const input = document.getElementById('inputTweet');
-	const value = input.value;
+	if (localUsername && localPassword) {
+		const input = document.getElementById('inputTweet');
+		const value = input.value;
 
-	const url = 'http://localhost:5000/newTweet';
-	const response = await fetch(url, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({
-			"user": localUsername,
-			"password": localPassword,
-			"message": value
-		})
-	});
-	const data = await response.json();
-	if (data.success) {
-		displayFilteredTweets();
-		messageAlert("Tweet ajouté.");
+		const url = 'http://localhost:5000/newTweet';
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				"user": localUsername,
+				"password": localPassword,
+				"message": value
+			})
+		});
+		const data = await response.json();
+		if (data.success) {
+			displayFilteredTweets();
+			messageAlert("Tweet ajouté.", 0);
+		}
+		else
+				messageAlert("Tweet n'a pas été ajouté.", 2)
 	}
+	else
+		messageAlert("Veuillez vous connecter.", 1);
 }
 
 async function login() {
@@ -108,11 +139,12 @@ async function login() {
 	if (data.success) {
 		localUsername = inputUsernameLogin.value;
 		localPassword = inputPasswordLogin.value;
-		messageAlert("Connexion réussie.");
+		messageAlert("Connexion réussie.", 0);
 		console.log("Logged as " + inputUsernameLogin.value);
 	}
 	else {
 		inputUsernameLogin.value = "";
+		messageAlert("Echec de connexion.", 2);
 	}
 
 	inputPasswordLogin.value = "";
@@ -137,12 +169,14 @@ async function register() {
 	if (data.success) {
 		localUsername = inputUsernameRegister.value;
 		localPassword = inputPasswordRegister.value;
-		messageAlert("Inscription réussie.");
+		messageAlert("Inscription et connexion réussie.", 0);
 		console.log("Registered and logged as " + inputUsernameRegister.value);
 
 		let inputUsernameLogin = document.getElementById('inputUsernameLogin');
 		inputUsernameLogin.value = localUsername;
 	}
+	else
+		messageAlert("Echec d'inscription.", 2);
 
 	inputUsernameRegister.value = "";
 	inputPasswordRegister.value = "";
