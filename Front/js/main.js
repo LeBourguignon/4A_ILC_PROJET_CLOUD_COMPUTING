@@ -1,3 +1,6 @@
+let localUsername = null;
+let localPassword = null;
+
 function filterFeed() {
 	// Récupérer la valeur de l'input
 	const input = document.getElementById('inputSearch');
@@ -83,6 +86,63 @@ async function addTweet() {
 	if (data.success) {
 		displayFilteredTweets();
 	}
+}
+
+async function login() {
+	let inputUsernameLogin = document.getElementById('inputUsernameLogin');
+	let inputPasswordLogin = document.getElementById('inputPasswordLogin');
+
+	console.log(inputUsernameLogin.value);
+	console.log(inputPasswordLogin.value);
+
+	const url = 'http://localhost:5000/login';
+	const response = await fetch(url, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({
+			"user": inputUsernameLogin.value,
+			"password": inputPasswordLogin.value
+		})
+	});
+	const data = await response.json();
+	console.log(data.success);
+	if (data.success) {
+		localUsername = inputUsernameLogin.value;
+		localPassword = inputPasswordLogin.value;
+		console.log("Logged as " + inputUsernameLogin.value);
+	}
+
+	inputUsernameLogin.value = "";
+	inputPasswordLogin.value = "";
+}
+
+async function register() {
+	let inputUsernameRegister = document.getElementById('inputUsernameRegister');
+	let inputPasswordRegister = document.getElementById('inputPasswordRegister');
+
+	const url = 'http://localhost:5000/register';
+	const response = await fetch(url, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({
+			"user": inputUsernameRegister.value,
+			"password": inputPasswordRegister.value
+		})
+	});
+	const data = await response.json();
+	//console.log(data);
+	if (data.success) {
+		localUsername = inputUsernameRegister.value;
+		localPassword = inputPasswordRegister.value;
+		console.log("Registered and logged as " + inputUsernameRegister.value);
+	}
+
+	inputUsernameRegister.value = "";
+	inputPasswordRegister.value = "";
 }
 
 function display(tweets) {
