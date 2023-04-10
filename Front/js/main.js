@@ -210,7 +210,24 @@ function display(tweets) {
 		const countRetweets = document.createElement('span');
 		countRetweets.appendChild(iconRetweet);
 		countRetweets.className = 'inline-flex items-center text-xs font-normal text-gray-500 dark:text-gray-400 ml-4';
-		countRetweets.innerHTML += tweet.retweets.length + " retweets";
+		if (tweet.retweets.length > 1) {
+			countRetweets.innerHTML += tweet.retweets.length + " retweets - ";
+			tweet.retweets.forEach(retweet => {
+			countRetweets.innerHTML += retweet + " ";
+			});
+		} else if (tweet.retweets.length == 1 ) {
+			countRetweets.innerHTML += tweet.retweets.length + " retweet - " ;
+			tweet.retweets.forEach(retweet => {
+			countRetweets.innerHTML += retweet + " ";
+			});
+		} else if (tweet.retweets.length > 5 ) {
+			countRetweets.innerHTML += tweet.retweets.length + " retweets - ";
+			for (let i = 0; i < 5; i++) {
+				countRetweets.innerHTML += tweet.retweets[i] + " ";
+		}
+		} else {
+			countRetweets.innerHTML += "Aucun retweet";
+		}
 
 		item.appendChild(time);
 		item.appendChild(author);
