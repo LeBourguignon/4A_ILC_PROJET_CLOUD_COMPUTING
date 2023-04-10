@@ -1,4 +1,5 @@
 from flask import Flask, request
+from flask_cors import cross_origin
 
 import redis
 import json
@@ -15,11 +16,13 @@ def login(user, password):
 ### Api Management
 
 @app.route("/", methods=['GET'])
+@cross_origin()
 def helloWorld():
 	return "Hello World! \n"
 	# curl -X GET http://localhost:5000/
 
 @app.route("/healthz", methods=['GET'])
+@cross_origin()
 def healthz():
 	return "200"
 	# curl -X GET http://localhost:5000/healthz
@@ -27,12 +30,14 @@ def healthz():
 ### User Management
 
 @app.route("/seekUser", methods=['POST'])
+@cross_origin()
 def seekUser():
 	data = request.get_json()
 	return { "find": r.hexists('users', data.get('user')) }
 	# curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom"}' http://localhost:5000/seekUser
 
 @app.route("/register", methods=['POST'])
+@cross_origin()
 def registerUser():
 	data = request.get_json()
 	if not(r.hexists('users', data.get('user'))):
@@ -43,12 +48,14 @@ def registerUser():
 	# curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom"}' http://localhost:5000/register
 
 @app.route("/login", methods=['POST'])
+@cross_origin()
 def loginUser():
 	data = request.get_json()
 	return { "success": login(data.get('user'), data.get('password')) }
 	# curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom"}' http://localhost:5000/login
 
 @app.route("/changePassword", methods=['POST'])
+@cross_origin()
 def changePassword():
 	data = request.get_json()
 	if login(data.get('user'), data.get('password')):
@@ -61,6 +68,7 @@ def changePassword():
 ### Tweets management
 
 @app.route("/newTweet", methods=['POST'])
+@cross_origin()
 def newTweet():
 	data = request.get_json()
 	if login(data.get('user'), data.get('password')):
@@ -89,6 +97,7 @@ def newTweet():
 	# curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom", "message": "Ceci est un test ! #test"}' http://localhost:5000/newTweet
 
 @app.route("/retweet", methods=['POST'])
+@cross_origin()
 def retweet():
 	data = request.get_json()
 	if login(data.get('user'), data.get('password')):
@@ -107,28 +116,33 @@ def retweet():
 ### Viewing tweets
 
 @app.route("/showTweets", methods=['GET'])
+@cross_origin()
 def showTweets():
 	return { "tweets": [json.loads(r.get(f"tweet:{tweet_id}")) for tweet_id in r.lrange('tweets', 0, -1)] }
 	# curl -X GET http://localhost:5000/showTweets
 
 @app.route("/showUserTweets", methods=['POST'])
+@cross_origin()
 def showUserTweets():
 	data = request.get_json()
 	return { "tweets": [json.loads(r.get(f"tweet:{tweet_id}")) for tweet_id in r.lrange(f'user:{data.get("user")}', 0, -1)] }
 	# curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom"}' http://localhost:5000/showUserTweets
 
 @app.route("/showHashtags", methods=['GET'])
+@cross_origin()
 def showHashtags():
 	return { "hashtags": r.lrange('hashtags', 0, -1) }
 	# curl -X GET http://localhost:5000/showHashtags
 
 @app.route("/showHashtagTweets", methods=['POST'])
+@cross_origin()
 def showHashtagTweets():
 	data = request.get_json()
 	return { "tweets": [json.loads(r.get(f"tweet:{tweet_id}")) for tweet_id in r.lrange(f'hashtag:{data.get("hashtag")}', 0, -1)] }
 	# curl -X POST -H "Content-Type: application/json" -d '{"hashtag": "#test"}' http://localhost:5000/showHashtagTweets
 
 @app.route("/searchRelatedTweets", methods=['POST'])
+@cross_origin()
 def searchRelatedTweets():
 	data = request.get_json()
 	response = {
