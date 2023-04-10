@@ -134,7 +134,7 @@ async function register() {
 		})
 	});
 	const data = await response.json();
-	//console.log(data);
+	console.log(data.success);
 	if (data.success) {
 		localUsername = inputUsernameRegister.value;
 		localPassword = inputPasswordRegister.value;
