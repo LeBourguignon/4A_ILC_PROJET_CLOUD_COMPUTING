@@ -156,11 +156,13 @@ function display(tweets) {
 		const item = document.createElement('li');
 		item.className = 'mb-10 ml-4';
 
+		// Heure du tweet
 		const time = document.createElement('time');
 		time.className = 'mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500';
 		const dateFormatted = new Date(tweet.date).toLocaleString('fr-FR', { weekday:"long", day:"numeric", year:"numeric", month:"short", hour:"numeric", minute:"numeric"});
 		time.innerHTML = dateFormatted.charAt(0).toUpperCase() + dateFormatted.slice(1);
 
+		// Auteur du tweet
 		const author = document.createElement('h3');
 		author.className = 'text-lg font-semibold text-gray-900 dark:text-white';
 		author.innerHTML = tweet.author;
@@ -170,10 +172,12 @@ function display(tweets) {
 			displayFilteredTweets();
 		});
 
+		// Contenu du tweet
 		const message = document.createElement('p');
 		message.className = 'mb-4 text-base font-normal text-gray-500 dark:text-gray-400';
 		message.innerHTML = tweet.message;
 
+		// Sujets détectés
 		const hashtagsDetected = document.createElement('div');
 		hashtagsDetected.className = 'mb-4 text-base font-normal text-gray-500 dark:text-gray-400';
 		hashtagsDetected.innerHTML = 'Sujets : ';
@@ -189,20 +193,20 @@ function display(tweets) {
 			hashtagsDetected.appendChild(hashtagDetected);
 		});
 
+		// Bouton de retweet
 		const btnRetweet = document.createElement('a');
 		btnRetweet.className = 'inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-200 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700';
 		btnRetweet.innerHTML = 'Retweet';
 		// Ajouter un événement au clic
 		btnRetweet.addEventListener('click', () => {
-			// Ajouter le nom de l'utilisateur à la liste des retweets
-			tweet.retweets.push('Tom');
-			// Rafraîchir la page
-			refresh();
+			retweet(tweet.id);
 		});
 
+		// Icon de retweet
 		const iconRetweet = document.createElement('i');
 		iconRetweet.className = 'fa-solid fa-share-from-square mr-1';
 
+		// Nombre de retweets
 		const countRetweets = document.createElement('span');
 		countRetweets.appendChild(iconRetweet);
 		countRetweets.className = 'inline-flex items-center text-xs font-normal text-gray-500 dark:text-gray-400 ml-4';
@@ -211,7 +215,9 @@ function display(tweets) {
 		item.appendChild(time);
 		item.appendChild(author);
 		item.appendChild(message);
-		item.appendChild(hashtagsDetected);
+		if (tweet.hashtags.length > 0) {
+			item.appendChild(hashtagsDetected);
+		}
 		item.appendChild(btnRetweet);
 		item.appendChild(countRetweets);
 
