@@ -1,6 +1,11 @@
 let localUsername = null;
 let localPassword = null;
 
+function messageAlert(message) {
+	const alert = document.getElementById('alert-text');
+	alert.innerHTML = message;
+}
+
 async function displayAllTweets() {
 	const input = document.getElementById('inputSearch');
 	input.value = "";
@@ -57,6 +62,7 @@ async function retweet(tweet_id) {
 	const data = await response.json();
 	if (data.success) {
 		displayFilteredTweets();
+		messageAlert("Tweet retweeté.");
 	}
 }
 
@@ -79,6 +85,7 @@ async function addTweet() {
 	const data = await response.json();
 	if (data.success) {
 		displayFilteredTweets();
+		messageAlert("Tweet ajouté.");
 	}
 }
 
@@ -101,6 +108,7 @@ async function login() {
 	if (data.success) {
 		localUsername = inputUsernameLogin.value;
 		localPassword = inputPasswordLogin.value;
+		messageAlert("Connexion réussie.");
 		console.log("Logged as " + inputUsernameLogin.value);
 	}
 	else {
@@ -129,6 +137,7 @@ async function register() {
 	if (data.success) {
 		localUsername = inputUsernameRegister.value;
 		localPassword = inputPasswordRegister.value;
+		messageAlert("Inscription réussie.");
 		console.log("Registered and logged as " + inputUsernameRegister.value);
 
 		let inputUsernameLogin = document.getElementById('inputUsernameLogin');
