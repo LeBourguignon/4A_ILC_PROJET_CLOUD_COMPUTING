@@ -20,19 +20,19 @@ Pour nous assurer du bon fonctionnement de l'API, nous avons implémenté deux r
 
 * La route racine `/` qui renvoie simplement un message `Hello World!`.
 
-Requête :
+	Requête :
 
-```
-curl -X GET http://localhost:5000/
-```
+	```
+	curl -X GET http://localhost:5000/
+	```
 
 * La route `/healthz`, souvent utilisée par des systèmes tels que Kubernetes, qui retourne `200`.
 
-Requête :
+	Requête :
 
-```
-curl -X GET http://localhost:5000/healthz
-```
+	```
+	curl -X GET http://localhost:5000/healthz
+	```
 
 #### Gestion des utilisateurs
 
@@ -40,17 +40,17 @@ Pour gérer les utilisateurs, nous avons implémenté plusieurs routes utilisant
 
 * La route `/seekUser` permet de rechercher si un utilisateur existe.
 
-Requête (exemple) :
+	Requête (exemple) :
 
-```
-curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom"}' http://localhost:5000/seekUser
-```
+	```
+	curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom"}' http://localhost:5000/seekUser
+	```
 
-Réponse (exemple) :
+	Réponse (exemple) :
 
-```
-{ "find": True }
-```
+	```
+	{ "find": True }
+	```
 
 ## Base de données
 
