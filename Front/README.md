@@ -12,6 +12,7 @@
 
 L'ensemble de l'affichage est géré en HTML/CSS/JS.
 Tailwind fournit des composants prêt à être utilisé et a aussi pour avantage de gérer tout le CSS dans le fichier html directement.
+Nous avons également utilisé Flowbite qui est elle-même basée sur Tailwind.
 
 Toutes les fonctions d'affichage, d'actions (ajouter un tweet, retweet, ..), d'inscription et de connexion se trouvent dans le fichier JavaScript.
 
@@ -50,5 +51,8 @@ Le menu permet de réaliser 3 actions.
 
 ![Menu](https://cloud.tom-roth.fr/index.php/s/4qcX3TWjaXmneyE/preview)
 
+### Message d'information
 
+En bas à droite de l'écran se trouve des messages d'informations, d'échecs et de réussites pour chaque action réalisée.
 
+![Alerte](https://cloud.tom-roth.fr/index.php/s/KH6dFGrWLt5dC9a/preview)
