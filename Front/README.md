@@ -51,6 +51,12 @@ Le menu permet de réaliser 3 actions.
 
 ![Menu](https://cloud.tom-roth.fr/index.php/s/4qcX3TWjaXmneyE/preview)
 
+### Connexion et inscription
+
+Une pop-up permet de se connecter avec un nom d'utilisateur et un mot de passe. Il est également possible de s'inscrire.
+
+![Connexion](https://cloud.tom-roth.fr/index.php/s/2QqN4W777cBsnmC/preview)
+
 ### Message d'information
 
 En bas à droite de l'écran se trouve des messages d'informations, d'échecs et de réussites pour chaque action réalisée.
