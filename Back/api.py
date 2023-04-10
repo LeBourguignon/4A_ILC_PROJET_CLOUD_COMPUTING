@@ -168,12 +168,6 @@ def searchRelatedTweets():
 if __name__ == '__main__':
 	print(" * Starting api.py")
 
-	if not r.ping():
-		print(" * The api failed to reach the data storage (redis)")
-		exit(1)
-	else:
-		print(" * The api succeeded to reach the data storage (redis)")
-
 	if len(sys.argv) > 1:
 		if sys.argv[1] == "check_syntax":
 			print(" * Build [ OK ]")
@@ -182,4 +176,9 @@ if __name__ == '__main__':
 			print(" * Passed argument not supported ! Supported argument : check_syntax")
 			exit(1)
 
-	app.run(debug=True)
+	if not r.ping():
+		print(" * The api failed to reach the data storage (redis)")
+		exit(1)
+	else:
+		print(" * The api succeeded to reach the data storage (redis)")
+		app.run(debug=True)

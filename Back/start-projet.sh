@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# pip install redis
-# pip install Flask
+# pip install Flask redis flask-cors
 
 export FLASK_APP=api.py
 export FLASK_DEBUG=true
