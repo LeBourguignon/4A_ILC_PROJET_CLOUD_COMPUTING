@@ -8,6 +8,13 @@
 
 # Twitter
 
+## Code
+
+L'ensemble de l'affichage est géré en HTML/CSS/JS.
+Tailwind fournit des composants prêt à être utilisé et a aussi pour avantage de gérer tout le CSS dans le fichier html directement.
+
+Toutes les fonctions d'affichage, d'actions (ajouter un tweet, retweet, ..), d'inscription et de connexion se trouvent dans le fichier JavaScript.
+
 ## Interface
 
 ### Barre de recherche
