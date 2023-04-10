@@ -1,12 +1,6 @@
 let localUsername = null;
 let localPassword = null;
 
-function filterFeed() {
-	// Récupérer la valeur de l'input
-	const input = document.getElementById('inputSearch');
-	const value = input.value;
-}
-
 async function displayAllTweets() {
 	const input = document.getElementById('inputSearch');
 	input.value = "";
@@ -92,9 +86,6 @@ async function login() {
 	let inputUsernameLogin = document.getElementById('inputUsernameLogin');
 	let inputPasswordLogin = document.getElementById('inputPasswordLogin');
 
-	console.log(inputUsernameLogin.value);
-	console.log(inputPasswordLogin.value);
-
 	const url = 'http://localhost:5000/login';
 	const response = await fetch(url, {
 		method: 'POST',
@@ -107,14 +98,15 @@ async function login() {
 		})
 	});
 	const data = await response.json();
-	console.log(data.success);
 	if (data.success) {
 		localUsername = inputUsernameLogin.value;
 		localPassword = inputPasswordLogin.value;
 		console.log("Logged as " + inputUsernameLogin.value);
 	}
+	else {
+		inputUsernameLogin.value = "";
+	}
 
-	inputUsernameLogin.value = "";
 	inputPasswordLogin.value = "";
 }
 
@@ -134,11 +126,13 @@ async function register() {
 		})
 	});
 	const data = await response.json();
-	console.log(data.success);
 	if (data.success) {
 		localUsername = inputUsernameRegister.value;
 		localPassword = inputPasswordRegister.value;
 		console.log("Registered and logged as " + inputUsernameRegister.value);
+
+		let inputUsernameLogin = document.getElementById('inputUsernameLogin');
+		inputUsernameLogin.value = localUsername;
 	}
 
 	inputUsernameRegister.value = "";

@@ -24,6 +24,12 @@ Conteneurisation de redis
 docker run --name cloudComputingRedis -p 6379:6379 redis
 ```
 
+Pour charger des Tweets et des utilisateurs par défaut dans la base de données Redis afin d'avoir une base pour tester l'interface utilisateur, nous pouvons executer le script python dans le dossier `Back`
+
+```
+python3 LoadData.py
+```
+
 ### Démarrage de l'`API`
 
 Création de l'image de l'API :
