@@ -1,64 +1,50 @@
-const data =
-	{
-		"tweets": [
-		  {
-			"author": "Tom",
-			"date": "2023-04-05T21:39:01.763668",
-			"hashtags": [
-			  "#test",
-			  "#Tom"
-			],
-			"id": 2,
-			"message": "Ceci est encore un test ! #test #Tom",
-			"retweets": []
-		  },
-		  {
-			"author": "Tom",
-			"date": "2023-04-05T21:37:39.623776",
-			"hashtags": [
-			  "#test",
-			  "#Tom"
-			],
-			"id": 1,
-			"message": "Ceci est un test ! #test #Tom",
-			"retweets": [
-			  "Tom"  
-			]
-		  },
-		  {
-			"author": "Tom",
-			"date": "2023-04-05T21:34:24.422315",
-			"hashtags": [
-			  "#test",
-			  "#First",
-			  "#Tom"
-			],
-			"id": 0,
-			"message": "Ceci est le premier test ! #test#First #Tom",
-			"retweets": []
-		  }
-		]
-	}
-
 function filterFeed() {
 	// Récupérer la valeur de l'input
 	const input = document.getElementById('inputSearch');
 	const value = input.value;
 }
 
-function refresh() {
-	console.log('Refreshing...');
-	// Créer une alerte avec un message personnalisé
-	// https://tailwindcss.com/components/alerts
+async function displayAllTweets() {
+	const input = document.getElementById('inputSearch');
+	input.value = "";
 
-	const alert = document.createElement('div');
-	alert.classList.add('bg-blue-500', 'text-white', 'font-bold', 'rounded-t', 'px-4', 'py-3', 'shadow-md', 'mb-2');
-	alert.setAttribute('role', 'alert');
-	alert.innerHTML = 'Refreshing...';
+	// Récupérer tous les tweets
+	const url = 'http://localhost:5000/showTweets';
+	const response = await fetch(url, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});
+	const data = await response.json();
 
-	// Récupérer les tweets
-	const tweets = data.tweets;
+	display(data.tweets);
+}
 
+async function displayFilteredTweets() {
+	const input = document.getElementById('inputSearch');
+
+	if (input.value == "") {
+		displayAllTweets();
+		return;
+	}
+
+	const url = 'http://localhost:5000/searchRelatedTweets';
+	const response = await fetch(url, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({
+			"search": input.value
+		})
+	});
+	const data = await response.json();
+
+	display(data.tweets);
+}
+
+function display(tweets) {
 	// Supprimer les tweets existants
 	const feed = document.getElementById("feed");
 	feed.innerHTML = "";
@@ -77,6 +63,11 @@ function refresh() {
 		const author = document.createElement('h3');
 		author.className = 'text-lg font-semibold text-gray-900 dark:text-white';
 		author.innerHTML = tweet.author;
+		author.addEventListener('click', () => {
+			const input = document.getElementById('inputSearch');
+			input.value = tweet.author;
+			displayFilteredTweets();
+		});
 
 		const message = document.createElement('p');
 		message.className = 'mb-4 text-base font-normal text-gray-500 dark:text-gray-400';
@@ -92,6 +83,7 @@ function refresh() {
 			hashtagDetected.addEventListener('click', () => {
 				const input = document.getElementById('inputSearch');
 				input.value = hashtag;
+				displayFilteredTweets();
 			});
 			hashtagsDetected.appendChild(hashtagDetected);
 		});
@@ -126,4 +118,4 @@ function refresh() {
 	});
 }
 
-refresh();
+displayAllTweets();
