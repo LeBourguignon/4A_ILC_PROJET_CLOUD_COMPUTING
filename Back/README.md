@@ -49,7 +49,7 @@ Pour gérer les utilisateurs, nous avons implémenté plusieurs routes utilisant
 	Réponse (exemple) :
 
 	```
-	{ "find": True }
+	{ "find": True/False }
 	```
 
 * La route `/register` permet d'enregistrer un nouvel utilisateur.
@@ -63,7 +63,7 @@ Pour gérer les utilisateurs, nous avons implémenté plusieurs routes utilisant
 	Réponse (exemple) :
 
 	```
-	{ "success": True }
+	{ "success": True/False }
 	```
 
 * La route `/login` permet de vérifier si le couple d'utilisateur et de mot de passe est correct.
@@ -77,7 +77,7 @@ Pour gérer les utilisateurs, nous avons implémenté plusieurs routes utilisant
 	Réponse (exemple) :
 
 	```
-	{ "success": True }
+	{ "success": True/False }
 	```
 
 * La route `/changePassword` permet de modifier le mot de passe d'un utilisateur.
@@ -91,7 +91,7 @@ Pour gérer les utilisateurs, nous avons implémenté plusieurs routes utilisant
 	Réponse (exemple) :
 
 	```
-	{ "success": True }
+	{ "success": True/False }
 	```
 
 #### Gestion des Tweets
@@ -109,7 +109,7 @@ Pour gérer les Tweets, nous avons implémenté deux routes utilisant la méthod
 	Réponse (exemple) :
 
 	```
-	{ "success": True }
+	{ "success": True/False }
 	```
 
 * La route `/retweet` permet de retweeter un Tweet en utilisant l'identifiant du Tweet.
@@ -123,7 +123,7 @@ Pour gérer les Tweets, nous avons implémenté deux routes utilisant la méthod
 	Réponse (exemple) :
 
 	```
-	{ "success": True }
+	{ "success": True/False }
 	```
 
 #### Affichage des Tweets
@@ -226,4 +226,35 @@ Pour obtenir tous les Tweets ou des Tweets spécifiques, nous avons implémenté
 
 ## Base de données
 
+Pour externaliser le stockage des données et garantir leur conservation en cas de redémarrage de l'API, nous avons utilisé la base de données clé/valeur `Redis`.
+
 [![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
+
+Pour stocker nos utilisateurs, nous avons choisi d'utiliser un `hash` Redis appelé `users`, qui nous permet de stocker des paires clé/valeur `user`/`password`, où la clé est unique au sein du hash.
+
+Pour stocker les Tweets, nous avons choisi d'utiliser la méthode classique de Redis, c'est-à-dire la clé/valeur. La clé sera constituée du préfixe `tweet:` suivi de l'identifiant du Tweet, et la valeur sera un objet `JSON` transformé en chaîne de caractères, avec la structure suivante :
+
+Clé : `tweet:10`
+
+```
+{
+	"id": 10,
+	"author": ...,
+	"date": ...,
+	"hashtags": [...],
+	"message": ...,
+	"retweets": [...]
+}
+```
+
+où `id` représente l'identifiant unique du Tweet, `author` représente l'auteur du Tweet, `date` représente la date de publication du Tweet, `hashtags` représente les sujets (hashtags) associés au Tweet, `message` représente le contenu du Tweet, et `retweets` représente les retweets associés au Tweet, c'est-à-dire les utilisateurs qui l'ont retweeté.
+
+Pour retrouver nos Tweets, car nous ne connaissons pas forcément les id de nos Tweets, nous avons décidé de mettre en place plusieurs listes qui contiendront les id de nos Tweets, ordonnées de façon chronologique inversée :
+
+* La première liste est `tweets`, qui contiendra l'ensemble des id des Tweets existants.
+
+* Le deuxième type de liste sera la liste des id des Tweets liés à un utilisateur, avec comme clé `user:{user}`.
+
+* Le troisième type de liste sera la liste des id des Tweets liés à un sujet (hashtag), avec comme clé `hashtag:{hashtag}`.
+
+Enfin, pour retrouver nos différents sujets (hashtags), nous avons décidé de créer une dernière liste qui contiendra tous les sujets (hashtags) existants, avec comme clé `hashtags`.
