@@ -1,3 +1,45 @@
+const data =
+	{
+		"tweets": [
+		  {
+			"author": "Tom",
+			"date": "2023-04-05T21:39:01.763668",
+			"hashtags": [
+			  "#test",
+			  "#Tom"
+			],
+			"id": 2,
+			"message": "Ceci est encore un test ! #test #Tom",
+			"retweets": []
+		  },
+		  {
+			"author": "Tom",
+			"date": "2023-04-05T21:37:39.623776",
+			"hashtags": [
+			  "#test",
+			  "#Tom"
+			],
+			"id": 1,
+			"message": "Ceci est un test ! #test #Tom",
+			"retweets": [
+			  "Tom"  
+			]
+		  },
+		  {
+			"author": "Tom",
+			"date": "2023-04-05T21:34:24.422315",
+			"hashtags": [
+			  "#test",
+			  "#First",
+			  "#Tom"
+			],
+			"id": 0,
+			"message": "Ceci est le premier test ! #test#First #Tom",
+			"retweets": []
+		  }
+		]
+	}
+
 function refresh() {
 	console.log('Refreshing...');
 	// Créer une alerte avec un message personnalisé
@@ -8,12 +50,70 @@ function refresh() {
 	alert.setAttribute('role', 'alert');
 	alert.innerHTML = 'Refreshing...';
 
-	// Ajouter l'alerte au body
-	const container = document.querySelector('body');
-	container.insertBefore(alert, container.firstChild);
+	// Récupérer les tweets
+	const tweets = data.tweets;
 
-	// Supprimer l'alerte après 2 secondes
-	setTimeout(() => {
-		alert.remove();
-	}, 2000);
+	// Supprimer les tweets existants
+	const feed = document.getElementById("feed");
+	feed.innerHTML = "";
+
+	// Ajouter les tweets à la liste
+	// Template du feed disponible sur https://flowbite.com/docs/components/timeline/
+	tweets.forEach(tweet => {
+		const item = document.createElement('li');
+		item.className = 'mb-10 ml-4';
+
+		const time = document.createElement('time');
+		time.className = 'mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500';
+		const dateFormatted = new Date(tweet.date).toLocaleString('fr-FR', { weekday:"long", day:"numeric", year:"numeric", month:"short", hour:"numeric", minute:"numeric"});
+		time.innerHTML = dateFormatted.charAt(0).toUpperCase() + dateFormatted.slice(1);
+
+		const author = document.createElement('h3');
+		author.className = 'text-lg font-semibold text-gray-900 dark:text-white';
+		author.innerHTML = tweet.author;
+
+		const message = document.createElement('p');
+		message.className = 'mb-4 text-base font-normal text-gray-500 dark:text-gray-400';
+		message.innerHTML = tweet.message;
+
+		const hashtagsDetected = document.createElement('div');
+		hashtagsDetected.className = 'mb-4 text-base font-normal text-gray-500 dark:text-gray-400';
+		hashtagsDetected.innerHTML = 'Sujets : ';
+		tweet.hashtags.forEach(hashtag => {
+			const hashtagDetected = document.createElement('span');
+			hashtagDetected.className = 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100';
+			hashtagDetected.innerHTML = hashtag;
+			hashtagsDetected.appendChild(hashtagDetected);
+		});
+
+		const btnRetweet = document.createElement('a');
+		btnRetweet.className = 'inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-200 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700';
+		btnRetweet.innerHTML = 'Retweet';
+		// Ajouter un événement au clic
+		btnRetweet.addEventListener('click', () => {
+			// Ajouter le nom de l'utilisateur à la liste des retweets
+			tweet.retweets.push('Tom');
+			// Rafraîchir la page
+			refresh();
+		});
+
+		const iconRetweet = document.createElement('i');
+		iconRetweet.className = 'fa-solid fa-share-from-square mr-1';
+
+		const countRetweets = document.createElement('span');
+		countRetweets.appendChild(iconRetweet);
+		countRetweets.className = 'inline-flex items-center text-xs font-normal text-gray-500 dark:text-gray-400 ml-4';
+		countRetweets.innerHTML += tweet.retweets.length + " retweets";
+
+		item.appendChild(time);
+		item.appendChild(author);
+		item.appendChild(message);
+		item.appendChild(hashtagsDetected);
+		item.appendChild(btnRetweet);
+		item.appendChild(countRetweets);
+
+		feed.appendChild(item);
+	});
 }
+
+refresh();
