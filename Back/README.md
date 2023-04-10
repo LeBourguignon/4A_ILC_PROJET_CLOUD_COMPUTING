@@ -128,7 +128,101 @@ Pour gérer les Tweets, nous avons implémenté deux routes utilisant la méthod
 
 #### Affichage des Tweets
 
+Pour obtenir tous les Tweets ou des Tweets spécifiques, nous avons implémenté plusieurs routes en utilisant les méthodes `GET` ou `POST`:
 
+* La route `/showTweets` permet d'obtenir tous les Tweets en utilisant la méthode `GET`.
+
+	Requête (exemple) :
+
+	```
+	curl -X GET http://localhost:5000/showTweets
+	```
+
+	Réponse (exemple) :
+
+	```
+	{
+		"tweets": [
+			{
+				"id": ...,
+				"author": ...,
+				"date": ...,
+				"hashtags": [...],
+				"message": ...,
+				"retweets": [...]
+			},
+			...
+		]
+	}
+	```
+
+* La route `/showUserTweets` permet d'obtenir tous les Tweets liés à un utilisateur, c'est-à-dire ses Tweets ou ses retweets, en utilisant la méthode `POST`.
+
+	Requête (exemple) :
+
+	```
+	curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom"}' http://localhost:5000/showUserTweets
+	```
+
+	Réponse (exemple) :
+
+	```
+	{
+		"tweets": [
+			{
+				"id": ...,
+				"author": "Tom",
+				"date": ...,
+				"hashtags": [...],
+				"message": ...,
+				"retweets": ["Tom", ...]
+			},
+			...
+		]
+	}
+	```
+
+* La route `/showHashtags` permet d'obtenir la liste de tous les sujet (hashtags) existants en utilisant la méthode `GET`.
+
+	Requête (exemple) :
+
+	```
+	curl -X GET http://localhost:5000/showHashtags
+	```
+
+	Réponse (exemple) :
+
+	```
+	{
+		"hashtags": [...]
+	}
+	```
+
+* La route `/showHashtagTweets` permet d'obtenir tous les Tweets liés à un sujet (hashtag) en utilisant la méthode `POST`.
+
+	Requête (exemple) :
+
+	```
+	curl -X POST -H "Content-Type: application/json" -d '{"hashtag": "#test"}' http://localhost:5000/showHashtagTweets
+	```
+
+	Réponse (exemple) :
+
+	```
+	{
+		"tweets": [
+			{
+				"id": ...,
+				"author": ...,
+				"date": ...,
+				"hashtags": ["#test", ...],
+				"message": ...,
+				"retweets": [...]
+			},
+			...
+		]
+	}
+	```
 
 ## Base de données
 
