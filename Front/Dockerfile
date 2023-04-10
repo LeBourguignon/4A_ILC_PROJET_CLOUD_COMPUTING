@@ -12,3 +12,7 @@ EXPOSE 8080
 
 # Démarrer Nginx en arrière-plan lors de l'exécution du conteneur
 CMD ["nginx", "-g", "daemon off;"]
+
+# Commande docker :
+# docker build -t cloud-computing-nginx .
+# docker run -d --name cloudComputingNginx -p 8080:8080 --link cloudComputingApi:localhost cloud-computing-nginx
