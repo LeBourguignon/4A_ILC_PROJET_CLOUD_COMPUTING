@@ -224,6 +224,7 @@ function display(tweets) {
 			countRetweets.innerHTML += tweet.retweets.length + " retweets - ";
 			for (let i = 0; i < 5; i++) {
 				countRetweets.innerHTML += tweet.retweets[i] + " ";
+			countRetweets.innerHTML += "...";
 		}
 		} else {
 			countRetweets.innerHTML += "Aucun retweet";
