@@ -7,11 +7,12 @@ import datetime
 import re
 import sys
 
+import socket
+host_name = socket.gethostname()
+host_ip = socket.gethostbyname(host_name)
+
 app = Flask(__name__)
 r = redis.Redis(host='localhost', port=6379, db=0, encoding='utf-8', decode_responses=True)
-
-def login(user, password):
-	return r.hexists('users', user) and r.hget('users', user) == password
 
 ### Api Management
 
@@ -28,6 +29,9 @@ def healthz():
 	# curl -X GET http://localhost:5000/healthz
 
 ### User Management
+
+def login(user, password):
+	return r.hexists('users', user) and r.hget('users', user) == password
 
 @app.route("/seekUser", methods=['POST'])
 @cross_origin()
@@ -181,4 +185,4 @@ if __name__ == '__main__':
 		exit(1)
 	else:
 		print(" * The api succeeded to reach the data storage (redis)")
-		app.run(debug=True)
+		app.run(host=host_ip, debug=True)
