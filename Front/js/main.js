@@ -7,18 +7,18 @@ function messageAlert(message, type = 1) {
 
 	const icon = document.getElementById('alert-icon');
 	switch(type) {
-		case 0:	// vert
+		case 0:	// Action réussie
 			icon.className = "fa-solid fa-check";
 			icon.style = "color: #00ff40;";
 			break;
 
 		default:
-		case 1:	// info
+		case 1:	// Message d'information
 			icon.className = "fa-solid fa-circle-info";
 			icon.style = "color: #0e7ab8;";
 			break;
 
-		case 2:	//rouge
+		case 2:	// Action échouée
 			icon.className = "fa-solid fa-xmark";
 			icon.style = "color: #ff0000;";
 			break;
@@ -114,7 +114,7 @@ async function addTweet() {
 			messageAlert("Tweet ajouté.", 0);
 		}
 		else
-				messageAlert("Tweet n'a pas été ajouté.", 2)
+			messageAlert("Tweet n'a pas été ajouté.", 2);
 	}
 	else
 		messageAlert("Veuillez vous connecter.", 1);
