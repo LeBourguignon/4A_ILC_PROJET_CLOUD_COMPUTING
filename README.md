@@ -1,5 +1,7 @@
 #  4A_ILC_PROJET_CLOUD_COMPUTING
 
+[![badge](https://img.shields.io/badge/PROJET_TERMINÉ_🚀-059142?style=for-the-badge&logoColor=white)](https://dev.to/envoy_/150-badges-for-github-pnk)
+
 Ce projet a pour objectif de développer les différentes composantes de microservices nécessaires pour recréer un service de type SaaS (Software-as-a-Service) similaire à `Twitter`.
 
 Ce projet sera composé de deux parties distinctes : le [frontend](Front/README.md) et le [backend](Back/README.md).
