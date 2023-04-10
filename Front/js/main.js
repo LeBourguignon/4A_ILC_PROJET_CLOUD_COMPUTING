@@ -44,6 +44,47 @@ async function displayFilteredTweets() {
 	display(data.tweets);
 }
 
+async function retweet(tweet_id) {
+	const url = 'http://localhost:5000/retweet';
+	const response = await fetch(url, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({
+			"user": localUsername,
+			"password": localPassword,
+			"tweet_id": tweet_id
+		})
+	});
+	const data = await response.json();
+	if (data.success) {
+		displayFilteredTweets();
+	}
+}
+
+async function addTweet() {
+	const input = document.getElementById('inputTweet');
+	const value = input.value;
+
+	const url = 'http://localhost:5000/newTweet';
+	const response = await fetch(url, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({
+			"user": localUsername,
+			"password": localPassword,
+			"message": value
+		})
+	});
+	const data = await response.json();
+	if (data.success) {
+		displayFilteredTweets();
+	}
+}
+
 function display(tweets) {
 	// Supprimer les tweets existants
 	const feed = document.getElementById("feed");
