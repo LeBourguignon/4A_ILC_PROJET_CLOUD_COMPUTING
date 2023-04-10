@@ -224,6 +224,39 @@ Pour obtenir tous les Tweets ou des Tweets spécifiques, nous avons implémenté
 	}
 	```
 
+* La route `/searchRelatedTweets` permet d'obtenir tous les Tweets liés à un sujet (hashtag) ou à un utilisateur en fonction de la chaîne de caractères fournie en utilisant la méthode `POST`.
+
+	Requête (exemple) :
+
+	```
+	curl -X POST -H "Content-Type: application/json" -d '{"search": "#test"}' http://localhost:5000/searchRelatedTweets
+	```
+
+	ou
+	
+	```
+	curl -X POST -H "Content-Type: application/json" -d '{"search": "Tom"}' http://localhost:5000/searchRelatedTweets
+	```
+
+	Réponse (exemple) :
+
+	```
+	{
+		"type": "hashtag" ou "user",
+		"tweets": [
+			{
+				"id": ...,
+				"author": ...,
+				"date": ...,
+				"hashtags": [...],
+				"message": ...,
+				"retweets": [...]
+			},
+			...
+		]
+	}
+	```
+
 ## Base de données
 
 Pour externaliser le stockage des données et garantir leur conservation en cas de redémarrage de l'API, nous avons utilisé la base de données clé/valeur `Redis`.

@@ -128,6 +128,27 @@ def showHashtagTweets():
 	return { "tweets": [json.loads(r.get(f"tweet:{tweet_id}")) for tweet_id in r.lrange(f'hashtag:{data.get("hashtag")}', 0, -1)] }
 	# curl -X POST -H "Content-Type: application/json" -d '{"hashtag": "#test"}' http://localhost:5000/showHashtagTweets
 
+@app.route("/searchRelatedTweets", methods=['POST'])
+def searchRelatedTweets():
+	data = request.get_json()
+	response = {
+		"type": "",
+		"tweets": []
+	}
+
+	if data.get("search") and data.get("search")[0] == '#':
+		response["type"] = "hashtag"
+		response["tweets"] = [json.loads(r.get(f"tweet:{tweet_id}")) for tweet_id in r.lrange(f'hashtag:{data.get("search")}', 0, -1)]
+
+	else:
+		response["type"] = "user"
+		response["tweets"] = [json.loads(r.get(f"tweet:{tweet_id}")) for tweet_id in r.lrange(f'user:{data.get("search")}', 0, -1)]
+
+	return response
+
+	# curl -X POST -H "Content-Type: application/json" -d '{"search": "#test"}' http://localhost:5000/searchRelatedTweets
+	# curl -X POST -H "Content-Type: application/json" -d '{"search": "Tom"}' http://localhost:5000/searchRelatedTweets
+
 ### Main
 
 if __name__ == '__main__':
