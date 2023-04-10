@@ -24,4 +24,4 @@ jobs:
         run: pip install flask
 
       - name: Build the Docker image
-        run: docker build /home/runner/work/4A_ILC_PROJET_CLOUD_COMPUTING/Front/ --file Dockerfile --tag nginx_server
+        run: docker build ../Front/ --file Dockerfile --tag nginx_server
