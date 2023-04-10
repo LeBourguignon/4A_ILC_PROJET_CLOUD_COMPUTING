@@ -57,31 +57,6 @@ def changePassword():
 	else:
 		return { "success": False }
 	# curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom", "newPassword": "itsTom"}' http://localhost:5000/changePassword
-	
-
-### Viewing tweets
-
-@app.route("/showTweets", methods=['GET'])
-def showTweets():
-	return { "tweets": [json.loads(r.get(f"tweet:{tweet_id}")) for tweet_id in r.lrange('tweets', 0, -1)] }
-	# curl -X GET http://localhost:5000/showTweets
-
-@app.route("/showUserTweets", methods=['POST'])
-def showUserTweets():
-	data = request.get_json()
-	return { "tweets": [json.loads(r.get(f"tweet:{tweet_id}")) for tweet_id in r.lrange(f'user:{data.get("user")}', 0, -1)] }
-	# curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom"}' http://localhost:5000/showUserTweets
-
-@app.route("/showHashtags", methods=['GET'])
-def showHashtags():
-	return { "hashtags": r.lrange('hashtags', 0, -1) }
-	# curl -X GET http://localhost:5000/showHashtags
-
-@app.route("/showHashtagTweets", methods=['POST'])
-def showHashtagTweets():
-	data = request.get_json()
-	return { "tweets": [json.loads(r.get(f"tweet:{tweet_id}")) for tweet_id in r.lrange(f'hashtag:{data.get("hashtag")}', 0, -1)] }
-	# curl -X POST -H "Content-Type: application/json" -d '{"hashtag": "#test"}' http://localhost:5000/showHashtagTweets
 
 ### Tweets management
 
@@ -128,6 +103,30 @@ def retweet():
 			return { "success": True }
 	return { "success": False }
 	# curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom", "tweet_id": 0}' http://localhost:5000/retweet
+
+### Viewing tweets
+
+@app.route("/showTweets", methods=['GET'])
+def showTweets():
+	return { "tweets": [json.loads(r.get(f"tweet:{tweet_id}")) for tweet_id in r.lrange('tweets', 0, -1)] }
+	# curl -X GET http://localhost:5000/showTweets
+
+@app.route("/showUserTweets", methods=['POST'])
+def showUserTweets():
+	data = request.get_json()
+	return { "tweets": [json.loads(r.get(f"tweet:{tweet_id}")) for tweet_id in r.lrange(f'user:{data.get("user")}', 0, -1)] }
+	# curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom"}' http://localhost:5000/showUserTweets
+
+@app.route("/showHashtags", methods=['GET'])
+def showHashtags():
+	return { "hashtags": r.lrange('hashtags', 0, -1) }
+	# curl -X GET http://localhost:5000/showHashtags
+
+@app.route("/showHashtagTweets", methods=['POST'])
+def showHashtagTweets():
+	data = request.get_json()
+	return { "tweets": [json.loads(r.get(f"tweet:{tweet_id}")) for tweet_id in r.lrange(f'hashtag:{data.get("hashtag")}', 0, -1)] }
+	# curl -X POST -H "Content-Type: application/json" -d '{"hashtag": "#test"}' http://localhost:5000/showHashtagTweets
 
 ### Main
 

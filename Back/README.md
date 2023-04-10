@@ -52,6 +52,84 @@ Pour gérer les utilisateurs, nous avons implémenté plusieurs routes utilisant
 	{ "find": True }
 	```
 
+* La route `/register` permet d'enregistrer un nouvel utilisateur.
+
+	Requête (exemple) :
+
+	```
+	curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom"}' http://localhost:5000/register
+	```
+
+	Réponse (exemple) :
+
+	```
+	{ "success": True }
+	```
+
+* La route `/login` permet de vérifier si le couple d'utilisateur et de mot de passe est correct.
+
+	Requête (exemple) :
+
+	```
+	curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom"}' http://localhost:5000/login
+	```
+
+	Réponse (exemple) :
+
+	```
+	{ "success": True }
+	```
+
+* La route `/changePassword` permet de modifier le mot de passe d'un utilisateur.
+
+	Requête (exemple) :
+
+	```
+	curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom", "newPassword": "itsTom"}' http://localhost:5000/changePassword
+	```
+
+	Réponse (exemple) :
+
+	```
+	{ "success": True }
+	```
+
+#### Gestion des Tweets
+
+Pour gérer les Tweets, nous avons implémenté deux routes utilisant la méthode `POST`, et pour chacune d'entre elles, il est nécessaire de prouver l'identité de l'utilisateur en fournissant le mot de passe :
+
+* La route `/newTweet` permet de publier un nouveau Tweet.
+
+	Requête (exemple) :
+
+	```
+	curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom", "message": "Ceci est un test ! #test"}' http://localhost:5000/newTweet
+	```
+
+	Réponse (exemple) :
+
+	```
+	{ "success": True }
+	```
+
+* La route `/retweet` permet de retweeter un Tweet en utilisant l'identifiant du Tweet.
+
+	Requête (exemple) :
+
+	```
+	curl -X POST -H "Content-Type: application/json" -d '{"user": "Tom", "password": "tomtom", "tweet_id": 0}' http://localhost:5000/retweet
+	```
+
+	Réponse (exemple) :
+
+	```
+	{ "success": True }
+	```
+
+#### Affichage des Tweets
+
+
+
 ## Base de données
 
 [![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
