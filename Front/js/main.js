@@ -40,6 +40,12 @@ const data =
 		]
 	}
 
+function filterFeed() {
+	// Récupérer la valeur de l'input
+	const input = document.getElementById('inputSearch');
+	const value = input.value;
+}
+
 function refresh() {
 	console.log('Refreshing...');
 	// Créer une alerte avec un message personnalisé
@@ -81,8 +87,12 @@ function refresh() {
 		hashtagsDetected.innerHTML = 'Sujets : ';
 		tweet.hashtags.forEach(hashtag => {
 			const hashtagDetected = document.createElement('span');
-			hashtagDetected.className = 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100';
+			hashtagDetected.className = 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100 mr-1';
 			hashtagDetected.innerHTML = hashtag;
+			hashtagDetected.addEventListener('click', () => {
+				const input = document.getElementById('inputSearch');
+				input.value = hashtag;
+			});
 			hashtagsDetected.appendChild(hashtagDetected);
 		});
 
