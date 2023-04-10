@@ -19,4 +19,4 @@ CMD ["python", "api.py"]
 # Commande docker :
 # docker run --name cloudComputingRedis -p 6379:6379 redis
 # docker build -t cloud-computing-api .
-# docker run -d --name cloudComputingApi -p 5000:5000 --link cloudComputingRedis:localhost cloud-computing-api
+# docker run -d --name cloudComputingApi -p 5000:5000 --link cloudComputingRedis:redis cloud-computing-api

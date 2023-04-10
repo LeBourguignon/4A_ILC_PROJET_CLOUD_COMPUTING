@@ -12,7 +12,7 @@ host_name = socket.gethostname()
 host_ip = socket.gethostbyname(host_name)
 
 app = Flask(__name__)
-r = redis.Redis(host='localhost', port=6379, db=0, encoding='utf-8', decode_responses=True)
+r = redis.Redis(host='redis', port=6379, db=0, encoding='utf-8', decode_responses=True)
 
 ### Api Management
 
